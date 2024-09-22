@@ -23,63 +23,86 @@
 [![REUSE status](https://api.reuse.software/badge/github.com/nlohmann/json)](https://api.reuse.software/info/github.com/nlohmann/json)
 [![Discord](https://img.shields.io/discord/1003743314341793913)](https://discord.gg/6mrGXKvX7y)
 
-- [Design goals](#design-goals)
-- [Sponsors](#sponsors)
-- [Support](#support) ([documentation](https://json.nlohmann.me), [FAQ](https://json.nlohmann.me/home/faq/), [discussions](https://github.com/nlohmann/json/discussions), [API](https://json.nlohmann.me/api/basic_json/), [bug issues](https://github.com/nlohmann/json/issues))
-- [Examples](#examples)
-  - [Read JSON from a file](#read-json-from-a-file)
-  - [Creating `json` objects from JSON literals](#creating-json-objects-from-json-literals)
-  - [JSON as first-class data type](#json-as-first-class-data-type)
-  - [Serialization / Deserialization](#serialization--deserialization)
+- [Design goals（设计目标）](#design-goals设计目标)
+- [Sponsors（赞助者）](#sponsors赞助者)
+  - [:raising\_hand: Priority Sponsor（优先赞助商）](#raising_hand-priority-sponsor优先赞助商)
+  - [:label: Named Sponsors（指定赞助商）](#label-named-sponsors指定赞助商)
+- [Support](#support)
+- [Examples（示例）](#examples示例)
+  - [Read JSON from a file（从一个文件中读取JSON数据）](#read-json-from-a-file从一个文件中读取json数据)
+  - [Creating `json` objects from JSON literals（从JSON字面量中创建json对象）](#creating-json-objects-from-json-literals从json字面量中创建json对象)
+  - [JSON as first-class data type（JSON 作为一级数据类型）](#json-as-first-class-data-typejson-作为一级数据类型)
+  - [Serialization / Deserialization（序列化/反序列化）](#serialization--deserialization序列化反序列化)
+    - [To/from strings（to strings and from strings）](#tofrom-stringsto-strings-and-from-strings)
+    - [To/from streams (e.g. files, string streams)（to streans and from streams）](#tofrom-streams-eg-files-string-streamsto-streans-and-from-streams)
+    - [Read from iterator range（从一个iterator中读取json object）](#read-from-iterator-range从一个iterator中读取json-object)
+    - [Custom data source（自定义数据源）](#custom-data-source自定义数据源)
+    - [SAX interface](#sax-interface)
   - [STL-like access](#stl-like-access)
   - [Conversion from STL containers](#conversion-from-stl-containers)
   - [JSON Pointer and JSON Patch](#json-pointer-and-json-patch)
   - [JSON Merge Patch](#json-merge-patch)
   - [Implicit conversions](#implicit-conversions)
-  - [Conversions to/from arbitrary types](#arbitrary-types-conversions)
+  - [Arbitrary types conversions](#arbitrary-types-conversions)
+    - [Basic usage](#basic-usage)
+    - [Simplify your life with macros](#simplify-your-life-with-macros)
+      - [Examples](#examples)
+    - [How do I convert third-party types?](#how-do-i-convert-third-party-types)
+    - [How can I use `get()` for non-default constructible/non-copyable types?](#how-can-i-use-get-for-non-default-constructiblenon-copyable-types)
+    - [Can I write my own serializer? (Advanced use)](#can-i-write-my-own-serializer-advanced-use)
   - [Specializing enum conversion](#specializing-enum-conversion)
   - [Binary formats (BSON, CBOR, MessagePack, UBJSON, and BJData)](#binary-formats-bson-cbor-messagepack-ubjson-and-bjdata)
-- [Supported compilers](#supported-compilers)
+- [Supported compilers（支持的compilers）](#supported-compilers支持的compilers)
 - [Integration](#integration)
   - [CMake](#cmake)
+    - [External](#external)
+    - [Embedded](#embedded)
+      - [Embedded (FetchContent)](#embedded-fetchcontent)
+    - [Supporting Both](#supporting-both)
   - [Package Managers](#package-managers)
   - [Pkg-config](#pkg-config)
 - [License](#license)
 - [Contact](#contact)
+- [Security](#security)
 - [Thanks](#thanks)
 - [Used third-party tools](#used-third-party-tools)
 - [Projects using JSON for Modern C++](#projects-using-json-for-modern-c)
 - [Notes](#notes)
+  - [Character encoding](#character-encoding)
+  - [Comments in JSON](#comments-in-json)
+  - [Order of object keys](#order-of-object-keys)
+  - [Memory Release](#memory-release)
+  - [Further notes](#further-notes)
 - [Execute unit tests](#execute-unit-tests)
 
-## Design goals
+## Design goals（设计目标）
 
-There are myriads of [JSON](https://json.org) libraries out there, and each may even have its reason to exist. Our class had these design goals:
+There are myriads of [JSON](https://json.org) libraries out there, and each may even have its reason to exist. Our class had these design goals（市面上有很多的JSON库，它们每一个库都有其存在的理由，我们的库有下列这些设计目标）:
 
-- **Intuitive syntax**. In languages such as Python, JSON feels like a first class data type. We used all the operator magic of modern C++ to achieve the same feeling in your code. Check out the [examples below](#examples) and you'll know what I mean.
+- **Intuitive syntax**. In languages such as Python, JSON feels like a first class data type. We used all the operator magic of modern C++ to achieve the same feeling in your code. Check out the [examples below](#examples) and you'll know what I mean.（在 Python 等语言中，JSON 感觉就像是一流的数据类型。我们使用现代 C++ 的所有运算符魔法在您的代码中实现同样的感觉。查看下面的示例，您就会明白我的意思。）
 
-- **Trivial integration**. Our whole code consists of a single header file [`json.hpp`](https://github.com/nlohmann/json/blob/develop/single_include/nlohmann/json.hpp). That's it. No library, no subproject, no dependencies, no complex build system. The class is written in vanilla C++11. All in all, everything should require no adjustment of your compiler flags or project settings.
+- **Trivial integration**. Our whole code consists of a single header file [`json.hpp`](https://github.com/nlohmann/json/blob/develop/single_include/nlohmann/json.hpp). That's it. No library, no subproject, no dependencies, no complex build system. The class is written in vanilla C++11. All in all, everything should require no adjustment of your compiler flags or project settings.（我们的整个代码由一个头文件json.cpp 组成。就是这样。没有库，没有子项目，没有依赖项，没有复杂的构建系统。该类是用原始 C++11 编写的。总而言之，一切都不需要调整编译器标志或项目设置。）
 
-- **Serious testing**. Our code is heavily [unit-tested](https://github.com/nlohmann/json/tree/develop/tests/src) and covers [100%](https://coveralls.io/r/nlohmann/json) of the code, including all exceptional behavior. Furthermore, we checked with [Valgrind](https://valgrind.org) and the [Clang Sanitizers](https://clang.llvm.org/docs/index.html) that there are no memory leaks. [Google OSS-Fuzz](https://github.com/google/oss-fuzz/tree/master/projects/json) additionally runs fuzz tests against all parsers 24/7, effectively executing billions of tests so far. To maintain high quality, the project is following the [Core Infrastructure Initiative (CII) best practices](https://bestpractices.coreinfrastructure.org/projects/289).
+- **Serious testing**. Our code is heavily [unit-tested](https://github.com/nlohmann/json/tree/develop/tests/src) and covers [100%](https://coveralls.io/r/nlohmann/json) of the code, including all exceptional behavior. Furthermore, we checked with [Valgrind](https://valgrind.org) and the [Clang Sanitizers](https://clang.llvm.org/docs/index.html) that there are no memory leaks. [Google OSS-Fuzz](https://github.com/google/oss-fuzz/tree/master/projects/json) additionally runs fuzz tests against all parsers 24/7, effectively executing billions of tests so far. To maintain high quality, the project is following the [Core Infrastructure Initiative (CII) best practices](https://bestpractices.coreinfrastructure.org/projects/289).（我们的代码经过了大量的 [单元测试](https://github.com/nlohmann/json/tree/develop/tests/src)，覆盖了 [100%](https://coveralls.io/r/nlohmann/json) 的代码，包括所有异常行为。此外，我们使用 [Valgrind](https://valgrind.org) 和 [Clang Sanitizers](https://clang.llvm.org/docs/index.html) 检查了是否存在内存泄漏。[Google OSS-Fuzz](https://github.com/google/oss-fuzz/tree/master/projects/json) 还会全天候对所有解析器运行模糊测试，迄今为止已有效执行了数十亿次测试。为了保持高质量，该项目遵循 [核心基础设施计划 (CII) 最佳实践](https://bestpractices.coreinfrastructure.org/projects/289)。）
 
-Other aspects were not so important to us:
+Other aspects were not so important to us（其他方面对我们来说不是特别的重要）:
 
-- **Memory efficiency**. Each JSON object has an overhead of one pointer (the maximal size of a union) and one enumeration element (1 byte). The default generalization uses the following C++ data types: `std::string` for strings, `int64_t`, `uint64_t` or `double` for numbers, `std::map` for objects, `std::vector` for arrays, and `bool` for Booleans. However, you can template the generalized class `basic_json` to your needs.
+- **Memory efficiency**. Each JSON object has an overhead of one pointer (the maximal size of a union) and one enumeration element (1 byte). The default generalization uses the following C++ data types: `std::string` for strings, `int64_t`, `uint64_t` or `double` for numbers, `std::map` for objects, `std::vector` for arrays, and `bool` for Booleans. However, you can template the generalized class `basic_json` to your needs.（每个 JSON 对象都有一个指针（联合的最大大小）和一个枚举元素（1 字节）的开销。默认泛化使用以下 C++ 数据类型：`std::string` 用于字符串，`int64_t`、`uint64_t` 或 `double` 用于数字，`std::map` 用于对象，`std::vector` 用于数组，`bool` 用于布尔值。但是，您可以根据需要模板化泛化类 `basic_json`。）
 
-- **Speed**. There are certainly [faster JSON libraries](https://github.com/miloyip/nativejson-benchmark#parsing-time) out there. However, if your goal is to speed up your development by adding JSON support with a single header, then this library is the way to go. If you know how to use a `std::vector` or `std::map`, you are already set.
+- **Speed**. There are certainly [faster JSON libraries](https://github.com/miloyip/nativejson-benchmark#parsing-time) out there. However, if your goal is to speed up your development by adding JSON support with a single header, then this library is the way to go. If you know how to use a `std::vector` or `std::map`, you are already set.（当然，还有[更快的 JSON 库](https://github.com/miloyip/nativejson-benchmark#parsing-time)。但是，如果您的目标是通过添加单个标头的 JSON 支持来加快开发速度，那么这个库就是您的最佳选择。如果您知道如何使用 `std::vector` 或 `std::map`，那么您已经准备好了。）
 
 See the [contribution guidelines](https://github.com/nlohmann/json/blob/master/.github/CONTRIBUTING.md#please-dont) for more information.
 
 
-## Sponsors
+## Sponsors（赞助者）
 
-You can sponsor this library at [GitHub Sponsors](https://github.com/sponsors/nlohmann).
+You can sponsor this library at [GitHub Sponsors](https://github.com/sponsors/nlohmann).（你可以在特定的页面赞助这个项目）
 
-### :raising_hand: Priority Sponsor
+### :raising_hand: Priority Sponsor（优先赞助商）
 
 - [Martti Laine](https://github.com/codeclown)
 
-### :label: Named Sponsors
+### :label: Named Sponsors（指定赞助商）
 
 - [Michael Hartmann](https://github.com/reFX-Mike)
 - [Stefan Hagen](https://github.com/sthagen)
@@ -94,7 +117,7 @@ Thanks everyone!
 
 :question: If you have a **question**, please check if it is already answered in the [**FAQ**](https://json.nlohmann.me/home/faq/) or the [**Q&A**](https://github.com/nlohmann/json/discussions/categories/q-a) section. If not, please [**ask a new question**](https://github.com/nlohmann/json/discussions/new) there.
 
-:books: If you want to **learn more** about how to use the library, check out the rest of the [**README**](#examples), have a look at [**code examples**](https://github.com/nlohmann/json/tree/develop/docs/examples), or browse through the [**help pages**](https://json.nlohmann.me).
+:books: If you want to **learn more** about how to use the library, check out the rest of the [**README**](#examples), have a look at [**code examples**](https://github.com/nlohmann/json/tree/develop/docs/examples), or browse through the [**help pages**](https://json.nlohmann.me).（如果你想要**详细了解**如何使用该库，请查看其余的 [**README**](#examples)，查看[**代码示例**](https://github.com/nlohmann/json/tree/develop/docs/examples)，或浏览[**帮助页面**](https://json.nlohmann.me)。）
 
 :construction: If you want to understand the **API** better, check out the [**API Reference**](https://json.nlohmann.me/api/basic_json/).
 
@@ -102,20 +125,20 @@ Thanks everyone!
 
 There is also a [**docset**](https://github.com/Kapeli/Dash-User-Contributions/tree/master/docsets/JSON_for_Modern_C%2B%2B) for the documentation browsers [Dash](https://kapeli.com/dash), [Velocity](https://velocity.silverlakesoftware.com), and [Zeal](https://zealdocs.org) that contains the full [documentation](https://json.nlohmann.me) as offline resource.
 
-## Examples
+## Examples（示例）
 
-Here are some examples to give you an idea how to use the class.
+Here are some examples to give you an idea how to use the class.（这是一些例子展示你应该如何使用这个库）
 
-Beside the examples below, you may want to:
+Beside the examples below, you may want to（除此之外你可能想要查看下列的内容）:
 
 → Check the [documentation](https://json.nlohmann.me/)\
 → Browse the [standalone example files](https://github.com/nlohmann/json/tree/develop/docs/examples)
 
-Every API function (documented in the [API Documentation](https://json.nlohmann.me/api/basic_json/)) has a corresponding standalone example file. For example, the [`emplace()`](https://json.nlohmann.me/api/basic_json/emplace/) function has a matching [emplace.cpp](https://github.com/nlohmann/json/blob/develop/docs/examples/emplace.cpp) example file.
+Every API function (documented in the [API Documentation](https://json.nlohmann.me/api/basic_json/)) has a corresponding standalone example file. For example, the [`emplace()`](https://json.nlohmann.me/api/basic_json/emplace/) function has a matching [emplace.cpp](https://github.com/nlohmann/json/blob/develop/docs/examples/emplace.cpp) example file.（每个 API 函数（记录在 [API 文档](https://json.nlohmann.me/api/basic_json/)）都有对应的独立示例文件。例如，[`emplace()`](https://json.nlohmann.me/api/basic_json/emplace/) 函数有一个匹配的 [emplace.cpp](https://github.com/nlohmann/json/blob/develop/docs/examples/emplace.cpp) 示例文件。）
 
-### Read JSON from a file
+### Read JSON from a file（从一个文件中读取JSON数据）
 
-The `json` class provides an API for manipulating a JSON value. To create a `json` object by reading a JSON file:
+The `json` class provides an API for manipulating a JSON value. To create a `json` object by reading a JSON file（针对操作一个JSON值json类提供了一个API。为了通过读取一个JSON文件来创建一个json对象，查看下列的代码示例）:
 
 ```cpp
 #include <fstream>
@@ -128,9 +151,9 @@ std::ifstream f("example.json");
 json data = json::parse(f);
 ```
 
-### Creating `json` objects from JSON literals
+### Creating `json` objects from JSON literals（从JSON字面量中创建json对象）
 
-Assume you want to create hard-code this literal JSON value in a file, as a `json` object:
+Assume you want to create hard-code this literal JSON value in a file, as a `json` object（假设你想在文件中将此字面量 JSON 值硬编码为 `json` 对象）:
 
 ```json
 {
@@ -139,10 +162,10 @@ Assume you want to create hard-code this literal JSON value in a file, as a `jso
 }
 ```
 
-There are various options:
+There are various options（这里是多种不同的选项）:
 
 ```cpp
-// Using (raw) string literals and json::parse
+// Using (raw) string literals and json::parse（使用RAW STRING LITERALS、json::parse函数）
 json ex1 = json::parse(R"(
   {
     "pi": 3.141,
@@ -159,18 +182,18 @@ json ex2 = R"(
   }
 )"_json;
 
-// Using initializer lists
+// Using initializer lists（这种初始化的方式我不常用）
 json ex3 = {
   {"happy", true},
   {"pi", 3.141},
 };
 ```
 
-### JSON as first-class data type
+### JSON as first-class data type（JSON 作为一级数据类型）
 
-Here are some examples to give you an idea how to use the class.
+Here are some examples to give you an idea how to use the class.（这里是一些例子用来展示如何使用json这个类）
 
-Assume you want to create the JSON object
+Assume you want to create the JSON object（假设你想要创建JSON object）
 
 ```json
 {
@@ -189,34 +212,34 @@ Assume you want to create the JSON object
 }
 ```
 
-With this library, you could write:
+With this library, you could write（如果你想要使用这个库创建上述的json object，）:
 
 ```cpp
-// create an empty structure (null)
+// create an empty structure (null) json j = {};
 json j;
 
-// add a number that is stored as double (note the implicit conversion of j to an object)
+// add a number that is stored as double (note the implicit conversion of j to an object)(添加一个被存储为double的数字，注意：j被隐式的转化为一个object)
 j["pi"] = 3.141;
 
-// add a Boolean that is stored as bool
+// add a Boolean that is stored as bool（添加一个被保存为boolean类型的object）
 j["happy"] = true;
 
-// add a string that is stored as std::string
+// add a string that is stored as std::string（添加一个字符串，这个字符串将会被存储为std::string）
 j["name"] = "Niels";
 
-// add another null object by passing nullptr
+// add another null object by passing nullptr（通过传递一个nullptr添加另外一个null object）
 j["nothing"] = nullptr;
 
-// add an object inside the object
+// add an object inside the object（在一个object中添加一个object
 j["answer"]["everything"] = 42;
 
-// add an array that is stored as std::vector (using an initializer list)
+// add an array that is stored as std::vector (using an initializer list)（添加一个array，这个array将会被保存为std::vector，使用初始化列表）
 j["list"] = { 1, 0, 2 };
 
-// add another object (using an initializer list of pairs)
+// add another object (using an initializer list of pairs)（添加一个object:使用配对的初始化列表）
 j["object"] = { {"currency", "USD"}, {"value", 42.99} };
 
-// instead, you could also write (which looks very similar to the JSON above)
+// instead, you could also write (which looks very similar to the JSON above)（相反，你也可以直接通过下列方式创建一个json object）
 json j2 = {
   {"pi", 3.141},
   {"happy", true},
@@ -233,7 +256,7 @@ json j2 = {
 };
 ```
 
-Note that in all these cases, you never need to "tell" the compiler which JSON value type you want to use. If you want to be explicit or express some edge cases, the functions [`json::array()`](https://json.nlohmann.me/api/basic_json/array/) and [`json::object()`](https://json.nlohmann.me/api/basic_json/object/) will help:
+Note that in all these cases, you never need to "tell" the compiler which JSON value type you want to use. If you want to be explicit or express some edge cases, the functions [`json::array()`](https://json.nlohmann.me/api/basic_json/array/) and [`json::object()`](https://json.nlohmann.me/api/basic_json/object/) will help（请注意，在所有这些情况下，您都无需“告诉”编译器要使用哪种 JSON 值类型。如果您想要明确或表达某些极端情况，函数 [`json::array()`](https://json.nlohmann.me/api/basic_json/array/) 和 [`json::object()`](https://json.nlohmann.me/api/basic_json/object/) 将有所帮助：）:
 
 ```cpp
 // a way to express the empty array []
@@ -247,17 +270,17 @@ json empty_object_explicit = json::object();
 json array_not_object = json::array({ {"currency", "USD"}, {"value", 42.99} });
 ```
 
-### Serialization / Deserialization
+### Serialization / Deserialization（序列化/反序列化）
 
-#### To/from strings
+#### To/from strings（to strings and from strings）
 
-You can create a JSON value (deserialization) by appending `_json` to a string literal:
+You can create a JSON value (deserialization) by appending `_json` to a string literal（你可以通过在一个string literal后面附加一个_json从而创建一个json object）:
 
 ```cpp
-// create object from string literal
+// create object from string literal（string literal--->json object）下列这种方式不容易理解
 json j = "{ \"happy\": true, \"pi\": 3.141 }"_json;
 
-// or even nicer with a raw string literal
+// or even nicer with a raw string literal（using raw string literal）
 auto j2 = R"(
   {
     "happy": true,
@@ -268,22 +291,25 @@ auto j2 = R"(
 
 Note that without appending the `_json` suffix, the passed string literal is not parsed, but just used as JSON string
 value. That is, `json j = "{ \"happy\": true, \"pi\": 3.141 }"` would just store the string
-`"{ "happy": true, "pi": 3.141 }"` rather than parsing the actual object.
+`"{ "happy": true, "pi": 3.141 }"` rather than parsing the actual object.（请注意，如果不添加 `_json` 后缀，则传递的字符串文字不会被解析，而只是用作 JSON 字符串
+值。也就是说，`json j = "{ \"happy\": true, \"pi\": 3.141 }"` 只会存储字符串
+`"{ "happy": true, "pi": 3.141 }"`，而不是解析实际对象。）
 
 The string literal should be brought into scope with `using namespace nlohmann::literals;`
-(see [`json::parse()`](https://json.nlohmann.me/api/operator_literal_json/)).
+(see [`json::parse()`](https://json.nlohmann.me/api/operator_literal_json/)).（应使用 `using namespace nlohmann::literals;` 将字符串文字纳入范围
+（请参阅 [`json::parse()`](https://json.nlohmann.me/api/operator_literal_json/))。）
 
-The above example can also be expressed explicitly using [`json::parse()`](https://json.nlohmann.me/api/basic_json/parse/):
+The above example can also be expressed explicitly using [`json::parse()`](https://json.nlohmann.me/api/basic_json/parse/)（上述示例也可以使用 [`json::parse()`](https://json.nlohmann.me/api/basic_json/parse/) 明确表达）:
 
 ```cpp
-// parse explicitly
+// parse explicitly（显式对json string进行解析）
 auto j3 = json::parse(R"({"happy": true, "pi": 3.141})");
 ```
 
-You can also get a string representation of a JSON value (serialize):
+You can also get a string representation of a JSON value (serialize)（你也可以获得一个JSON值的字符串表示，这个过程称之为serialize）:
 
 ```cpp
-// explicit conversion to string
+// explicit conversion to string（json object ---> string）
 std::string s = j.dump();    // {"happy":true,"pi":3.141}
 
 // serialization with pretty printing
@@ -295,13 +321,13 @@ std::cout << j.dump(4) << std::endl;
 // }
 ```
 
-Note the difference between serialization and assignment:
+Note the difference between serialization and assignment(注意serialization和assignment之间的区别):
 
 ```cpp
-// store a string in a JSON value
+// store a string in a JSON value（在一个json value中存储一个string）
 json j_string = "this is a string";
 
-// retrieve the string value
+// retrieve the string value（检索字符串值）
 auto cpp_string = j_string.template get<std::string>();
 // retrieve the string value (alternative when a variable already exists)
 std::string cpp_string2;
@@ -318,58 +344,62 @@ std::cout << j_string << " == " << serialized_string << std::endl;
 
 [`.dump()`](https://json.nlohmann.me/api/basic_json/dump/) returns the originally stored string value.
 
-Note the library only supports UTF-8. When you store strings with different encodings in the library, calling [`dump()`](https://json.nlohmann.me/api/basic_json/dump/) may throw an exception unless `json::error_handler_t::replace` or `json::error_handler_t::ignore` are used as error handlers.
+Note the library only supports UTF-8. When you store strings with different encodings in the library, calling [`dump()`](https://json.nlohmann.me/api/basic_json/dump/) may throw an exception unless `json::error_handler_t::replace` or `json::error_handler_t::ignore` are used as error handlers.（检索字符串值注意：该库仅支持 UTF-8。当您在库中存储具有不同编码的字符串时，调用 [`dump()`](https://json.nlohmann.me/api/basic_json/dump/) 可能会引发异常，除非使用 `json::error_handler_t::replace` 或 `json::error_handler_t::ignore` 作为错误处理程序。）
 
-#### To/from streams (e.g. files, string streams)
+#### To/from streams (e.g. files, string streams)（to streans and from streams）
 
-You can also use streams to serialize and deserialize:
+You can also use streams to serialize and deserialize（你也可以使用streams来进行serialize and deserialize）:
 
 ```cpp
-// deserialize from standard input
+// deserialize from standard input（从标准输入中deserialize）
 json j;
 std::cin >> j;
 
-// serialize to standard output
+// serialize to standard output(serialize到标准输出中)
 std::cout << j;
 
 // the setw manipulator was overloaded to set the indentation for pretty printing
 std::cout << std::setw(4) << j << std::endl;
 ```
 
-These operators work for any subclasses of `std::istream` or `std::ostream`. Here is the same example with files:
+These operators work for any subclasses of `std::istream` or `std::ostream`. Here is the same example with files（这些操作符对std::istream and std::ostream子类都是可以正常工作的。这是一个使用files的例子）:
 
 ```cpp
-// read a JSON file
+// read a JSON file（从file.json文件中读取stream，everything is file）
 std::ifstream i("file.json");
+//  创建一个空的nlohmann:json对象
 json j;
+//  将file.json中的内容“写入”到刚才创建的json object中
 i >> j;
 
-// write prettified JSON to another file
+// write prettified JSON to another file（将创建的json object写入到另外一个文件中）
 std::ofstream o("pretty.json");
 o << std::setw(4) << j << std::endl;
 ```
 
-Please note that setting the exception bit for `failbit` is inappropriate for this use case. It will result in program termination due to the `noexcept` specifier in use.
+Please note that setting the exception bit for `failbit` is inappropriate for this use case. It will result in program termination due to the `noexcept` specifier in use.（请注意，在此用例中，为“failbit”设置异常位是不合适的。由于使用了“noexcept”说明符，它将导致程序终止。）
 
-#### Read from iterator range
+#### Read from iterator range（从一个iterator中读取json object）
 
-You can also parse JSON from an iterator range; that is, from any container accessible by iterators whose `value_type` is an integral type of 1, 2 or 4 bytes, which will be interpreted as UTF-8, UTF-16 and UTF-32 respectively. For instance, a `std::vector<std::uint8_t>`, or a `std::list<std::uint16_t>`:
+You can also parse JSON from an iterator range; that is, from any container accessible by iterators whose `value_type` is an integral type of 1, 2 or 4 bytes, which will be interpreted as UTF-8, UTF-16 and UTF-32 respectively. For instance, a `std::vector<std::uint8_t>`, or a `std::list<std::uint16_t>`（您还可以从迭代器范围解析 JSON；也就是说，从迭代器可访问的任何容器解析 JSON，其“value_type”是 1、2 或 4 个字节的整数类型，分别被解释为 UTF-8、UTF-16 和 UTF-32。例如，“std::vector<std::uint8_t>”或“std::list<std::uint16_t>”）:
 
 ```cpp
+//  创建一个“字节”vector
 std::vector<std::uint8_t> v = {'t', 'r', 'u', 'e'};
+//  使用iterator进行解析
 json j = json::parse(v.begin(), v.end());
 ```
 
-You may leave the iterators for the range [begin, end):
+You may leave the iterators for the range [begin, end)（您可以将迭代器保留在范围 [begin, end) 内）:
 
 ```cpp
 std::vector<std::uint8_t> v = {'t', 'r', 'u', 'e'};
 json j = json::parse(v);
 ```
 
-#### Custom data source
+#### Custom data source（自定义数据源）
 
-Since the parse function accepts arbitrary iterator ranges, you can provide your own data sources by implementing the `LegacyInputIterator` concept.
+Since the parse function accepts arbitrary iterator ranges, you can provide your own data sources by implementing the `LegacyInputIterator` concept.（由于解析函数接受任意迭代器范围，您可以通过实现“LegacyInputIterator”概念来提供自己的数据源。）
 
 ```cpp
 struct MyContainer {
@@ -416,7 +446,7 @@ void foo() {
 
 #### SAX interface
 
-The library uses a SAX-like interface with the following functions:
+The library uses a SAX-like interface with the following functions（该库使用类似 SAX 的接口，具有以下功能）:
 
 ```cpp
 // called when null is parsed
@@ -461,7 +491,7 @@ Note the `sax_parse` function only returns a `bool` indicating the result of the
 
 ### STL-like access
 
-We designed the JSON class to behave just like an STL container. In fact, it satisfies the [**ReversibleContainer**](https://en.cppreference.com/w/cpp/named_req/ReversibleContainer) requirement.
+We designed the JSON class to behave just like an STL container. In fact, it satisfies the [**ReversibleContainer**](https://en.cppreference.com/w/cpp/named_req/ReversibleContainer) requirement.（我们将 JSON 类设计为与 STL 容器一样运行。事实上，它满足 [**ReversibleContainer**](https://en.cppreference.com/w/cpp/named_req/ReversibleContainer) 要求。）
 
 ```cpp
 // create an array using push_back
@@ -612,7 +642,7 @@ json j_ummap(c_ummap); // only one entry for key "three" is used
 
 ### JSON Pointer and JSON Patch
 
-The library supports **JSON Pointer** ([RFC 6901](https://tools.ietf.org/html/rfc6901)) as alternative means to address structured values. On top of this, **JSON Patch** ([RFC 6902](https://tools.ietf.org/html/rfc6902)) allows describing differences between two JSON values - effectively allowing patch and diff operations known from Unix.
+The library supports **JSON Pointer** ([RFC 6901](https://tools.ietf.org/html/rfc6901)) as alternative means to address structured values. On top of this, **JSON Patch** ([RFC 6902](https://tools.ietf.org/html/rfc6902)) allows describing differences between two JSON values - effectively allowing patch and diff operations known from Unix.（该库支持 **JSON 指针** ([RFC 6901](https://tools.ietf.org/html/rfc6901)) 作为处理结构化值的替代方法。除此之外，**JSON 补丁** ([RFC 6902](https://tools.ietf.org/html/rfc6902)) 允许描述两个 JSON 值之间的差异 - 有效地允许 Unix 中已知的补丁和差异操作。）
 
 ```cpp
 // a JSON value
@@ -650,7 +680,7 @@ json::diff(j_result, j_original);
 
 ### JSON Merge Patch
 
-The library supports **JSON Merge Patch** ([RFC 7386](https://tools.ietf.org/html/rfc7386)) as a patch format. Instead of using JSON Pointer (see above) to specify values to be manipulated, it describes the changes using a syntax that closely mimics the document being modified.
+The library supports **JSON Merge Patch** ([RFC 7386](https://tools.ietf.org/html/rfc7386)) as a patch format. Instead of using JSON Pointer (see above) to specify values to be manipulated, it describes the changes using a syntax that closely mimics the document being modified.（该库支持 **JSON Merge Patch** ([RFC 7386](https://tools.ietf.org/html/rfc7386)) 作为补丁格式。它不使用 JSON 指针（见上文）来指定要操作的值，而是使用与被修改文档非常相似的语法来描述更改。）
 
 ```cpp
 // a JSON value
@@ -1109,9 +1139,9 @@ auto cbor = json::to_msgpack(j); // 0xD5 (fixext2), 0x10, 0xCA, 0xFE
 ```
 
 
-## Supported compilers
+## Supported compilers（支持的compilers）
 
-Though it's 2023 already, the support for C++11 is still a bit sparse. Currently, the following compilers are known to work:
+Though it's 2023 already, the support for C++11 is still a bit sparse. Currently, the following compilers are known to work（虽然已经是 2023 年了，但对 C++11 的支持仍然有点稀少。目前，已知以下编译器可以工作）:
 
 - GCC 4.8 - 12.0 (and possibly later)
 - Clang 3.4 - 15.0 (and possibly later)
@@ -1207,7 +1237,7 @@ The following compilers are currently used in continuous integration at [AppVeyo
 
 ## Integration
 
-[`json.hpp`](https://github.com/nlohmann/json/blob/develop/single_include/nlohmann/json.hpp) is the single required file in `single_include/nlohmann` or [released here](https://github.com/nlohmann/json/releases). You need to add
+[`json.hpp`](https://github.com/nlohmann/json/blob/develop/single_include/nlohmann/json.hpp) is the single required file in `single_include/nlohmann` or [released here](https://github.com/nlohmann/json/releases). You need to add（[`json.hpp`](https://github.com/nlohmann/json/blob/develop/single_include/nlohmann/json.hpp) 是 `single_include/nlohmann` 中唯一必需的文件，或 [在此处发布](https://github.com/nlohmann/json/releases)。您需要添加）
 
 ```cpp
 #include <nlohmann/json.hpp>
@@ -1216,17 +1246,17 @@ The following compilers are currently used in continuous integration at [AppVeyo
 using json = nlohmann::json;
 ```
 
-to the files you want to process JSON and set the necessary switches to enable C++11 (e.g., `-std=c++11` for GCC and Clang).
+to the files you want to process JSON and set the necessary switches to enable C++11 (e.g., `-std=c++11` for GCC and Clang).（到您想要处理 JSON 的文件并设置必要的开关以启用 C++11（例如，GCC 和 Clang 的 `-std=c++11`）。）
 
-You can further use file [`include/nlohmann/json_fwd.hpp`](https://github.com/nlohmann/json/blob/develop/include/nlohmann/json_fwd.hpp) for forward-declarations. The installation of json_fwd.hpp (as part of cmake's install step), can be achieved by setting `-DJSON_MultipleHeaders=ON`.
+You can further use file [`include/nlohmann/json_fwd.hpp`](https://github.com/nlohmann/json/blob/develop/include/nlohmann/json_fwd.hpp) for forward-declarations. The installation of json_fwd.hpp (as part of cmake's install step), can be achieved by setting `-DJSON_MultipleHeaders=ON`.（您还可以使用文件 [`include/nlohmann/json_fwd.hpp`](https://github.com/nlohmann/json/blob/develop/include/nlohmann/json_fwd.hpp) 进行前向声明。json_fwd.hpp 的安装（作为 cmake 安装步骤的一部分）可以通过设置 `-DJSON_MultipleHeaders=ON` 来实现。）
 
 ### CMake
 
-You can also use the `nlohmann_json::nlohmann_json` interface target in CMake.  This target populates the appropriate usage requirements for `INTERFACE_INCLUDE_DIRECTORIES` to point to the appropriate include directories and `INTERFACE_COMPILE_FEATURES` for the necessary C++11 flags.
+You can also use the `nlohmann_json::nlohmann_json` interface target in CMake.  This target populates the appropriate usage requirements for `INTERFACE_INCLUDE_DIRECTORIES` to point to the appropriate include directories and `INTERFACE_COMPILE_FEATURES` for the necessary C++11 flags.（您还可以在 CMake 中使用 `nlohmann_json::nlohmann_json` 接口目标。此目标填充了 `INTERFACE_INCLUDE_DIRECTORIES` 的适当使用要求，以指向适当的包含目录，以及 `INTERFACE_COMPILE_FEATURES`，以获取必要的 C++11 标志。）
 
 #### External
 
-To use this library from a CMake project, you can locate it directly with `find_package()` and use the namespaced imported target from the generated package configuration:
+To use this library from a CMake project, you can locate it directly with `find_package()` and use the namespaced imported target from the generated package configuration（要在 CMake 项目中使用此库，您可以直接使用“find_package()”找到它，并使用生成的包配置中的命名空间导入目标）:
 
 ```cmake
 # CMakeLists.txt
@@ -1237,7 +1267,7 @@ add_library(foo ...)
 target_link_libraries(foo PRIVATE nlohmann_json::nlohmann_json)
 ```
 
-The package configuration file, `nlohmann_jsonConfig.cmake`, can be used either from an install tree or directly out of the build tree.
+The package configuration file, `nlohmann_jsonConfig.cmake`, can be used either from an install tree or directly out of the build tree.（包配置文件“nlohmann_jsonConfig.cmake”可以从安装树中使用，也可以直接从构建树中使用。）
 
 #### Embedded
 
