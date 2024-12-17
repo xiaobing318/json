@@ -15,6 +15,9 @@ concurrency:
   group: documentation
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   publish_documentation:
     permissions:
