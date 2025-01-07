@@ -37,10 +37,11 @@ The exact mapping and its limitations is described on a [dedicated page](../../f
 
 `use_type` (in)
 :   whether to add type annotations to container types (must be combined with `#!cpp use_size = true`); optional,
+`#!cpp false` by default.
 
 `version` (in)
-:   which version of BJData to use (see [draft 3](../../features/binary_formats/bjdata.md#draft-3-binary-format)); optional,
-`#!cpp false` by default.
+:   which version of BJData to use (see [draft 3](../../features/binary_formats/bjdata.md#draft-3-binary-format));
+optional, `#!cpp bjdata_version_t::draft2` by default.
 
 ## Return value
 

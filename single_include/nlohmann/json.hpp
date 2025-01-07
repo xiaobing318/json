@@ -16384,7 +16384,7 @@ class binary_writer
                       const bool use_type, const bool add_prefix = true,
                       const bool use_bjdata = false, const bjdata_version_t bjdata_version = bjdata_version_t::draft2)
     {
-        const bool bjdata_draft3 = bjdata_version == bjdata_version_t::draft3;
+        const bool bjdata_draft3 = use_bjdata && bjdata_version == bjdata_version_t::draft3;
 
         switch (j.type())
         {
@@ -16493,11 +16493,11 @@ class binary_writer
                     oa->write_character(to_char_type('['));
                 }
 
-                if (use_type && ((use_bjdata && bjdata_draft3) || !j.m_data.m_value.binary->empty()))
+                if (use_type && (bjdata_draft3 || !j.m_data.m_value.binary->empty()))
                 {
                     JSON_ASSERT(use_count);
                     oa->write_character(to_char_type('$'));
-                    oa->write_character(use_bjdata && bjdata_draft3 ? 'B' : 'U');
+                    oa->write_character(bjdata_draft3 ? 'B' : 'U');
                 }
 
                 if (use_count)
@@ -16516,7 +16516,7 @@ class binary_writer
                 {
                     for (size_t i = 0; i < j.m_data.m_value.binary->size(); ++i)
                     {
-                        oa->write_character(to_char_type((use_bjdata && bjdata_draft3) ? 'B' : 'U'));
+                        oa->write_character(to_char_type(bjdata_draft3 ? 'B' : 'U'));
                         oa->write_character(j.m_data.m_value.binary->data()[i]);
                     }
                 }
