@@ -1,5 +1,14 @@
 [![JSON for Modern C++](docs/mkdocs/docs/images/json.gif)](https://github.com/nlohmann/json/releases)
+```c
+/*
+Note:杨小兵-2025-01-23
 
+1、![JSON for Modern C++](docs/mkdocs/docs/images/json.gif)
+  1.1 ![url_name](url)语法用来在markdown中显示资源，例如图片
+  1.2 [url_name](url)语法用来在markdown中显示网址资源
+  1.3 通过上述组合方式可以直接点击图片跳转到指定的网址
+*/
+```
 [![Build Status](https://ci.appveyor.com/api/projects/status/1acb366xfyg3qybk/branch/develop?svg=true)](https://ci.appveyor.com/project/nlohmann/json)
 [![Ubuntu](https://github.com/nlohmann/json/workflows/Ubuntu/badge.svg)](https://github.com/nlohmann/json/actions?query=workflow%3AUbuntu)
 [![macOS](https://github.com/nlohmann/json/workflows/macOS/badge.svg)](https://github.com/nlohmann/json/actions?query=workflow%3AmacOS)
@@ -22,65 +31,185 @@
 [![GitHub Sponsors](https://img.shields.io/badge/GitHub-Sponsors-ff69b4)](https://github.com/sponsors/nlohmann)
 [![REUSE status](https://api.reuse.software/badge/github.com/nlohmann/json)](https://api.reuse.software/info/github.com/nlohmann/json)
 [![Discord](https://img.shields.io/discord/1003743314341793913)](https://discord.gg/6mrGXKvX7y)
+```c
+/*
+Note:杨小兵-2025-01-23
 
-- [Design goals](#design-goals)
-- [Sponsors](#sponsors)
-- [Support](#support) ([documentation](https://json.nlohmann.me), [FAQ](https://json.nlohmann.me/home/faq/), [discussions](https://github.com/nlohmann/json/discussions), [API](https://json.nlohmann.me/api/basic_json/), [bug issues](https://github.com/nlohmann/json/issues))
-- [Quick reference](#quick-reference)
-- [Examples](#examples)
-  - [Read JSON from a file](#read-json-from-a-file)
-  - [Creating `json` objects from JSON literals](#creating-json-objects-from-json-literals)
-  - [JSON as first-class data type](#json-as-first-class-data-type)
-  - [Serialization / Deserialization](#serialization--deserialization)
-  - [STL-like access](#stl-like-access)
-  - [Conversion from STL containers](#conversion-from-stl-containers)
-  - [JSON Pointer and JSON Patch](#json-pointer-and-json-patch)
-  - [JSON Merge Patch](#json-merge-patch)
-  - [Implicit conversions](#implicit-conversions)
-  - [Conversions to/from arbitrary types](#arbitrary-types-conversions)
-  - [Specializing enum conversion](#specializing-enum-conversion)
-  - [Binary formats (BSON, CBOR, MessagePack, UBJSON, and BJData)](#binary-formats-bson-cbor-messagepack-ubjson-and-bjdata)
-- [Customers](#customers)
-- [Supported compilers](#supported-compilers)
-- [Integration](#integration)
+1、![JSON for Modern C++](docs/mkdocs/docs/images/json.gif)
+  1.1 ![url_name](url)语法用来在markdown中显示资源，例如图片
+  1.2 [url_name](url)语法用来在markdown中显示网址资源
+  1.3 通过上述组合方式可以直接点击图片跳转到指定的网址
+  1.4 上述内容采用的都是相同的markdown语法
+*/
+```
+
+- [1 Design goals](#1-design-goals)
+- [2 Sponsors](#2-sponsors)
+  - [2.1 :raising\_hand: Priority Sponsor](#21-raising_hand-priority-sponsor)
+  - [2.2 :label: Named Sponsors](#22-label-named-sponsors)
+  - [2.3 Further support](#23-further-support)
+- [3 Support](#3-support)
+- [4 Quick reference](#4-quick-reference)
+- [5 Examples](#5-examples)
+  - [5.1 Read JSON from a file](#51-read-json-from-a-file)
+  - [5.2 Creating `json` objects from JSON literals](#52-creating-json-objects-from-json-literals)
+  - [5.3 JSON as first-class data type](#53-json-as-first-class-data-type)
+  - [5.4 Serialization / Deserialization](#54-serialization--deserialization)
+    - [To/from strings](#tofrom-strings)
+    - [To/from streams (e.g. files, string streams)](#tofrom-streams-eg-files-string-streams)
+    - [Read from iterator range](#read-from-iterator-range)
+    - [Custom data source](#custom-data-source)
+    - [SAX interface](#sax-interface)
+  - [5.5 STL-like access](#55-stl-like-access)
+  - [5.6 Conversion from STL containers](#56-conversion-from-stl-containers)
+  - [5.7 JSON Pointer and JSON Patch](#57-json-pointer-and-json-patch)
+  - [5.8 JSON Merge Patch](#58-json-merge-patch)
+  - [5.9 Implicit conversions](#59-implicit-conversions)
+  - [5.10 Arbitrary types conversions](#510-arbitrary-types-conversions)
+    - [Basic usage](#basic-usage)
+    - [Simplify your life with macros](#simplify-your-life-with-macros)
+      - [Example usage of macros](#example-usage-of-macros)
+    - [How do I convert third-party types?](#how-do-i-convert-third-party-types)
+    - [How can I use `get()` for non-default constructible/non-copyable types?](#how-can-i-use-get-for-non-default-constructiblenon-copyable-types)
+    - [Can I write my own serializer? (Advanced use)](#can-i-write-my-own-serializer-advanced-use)
+  - [5.11 Specializing enum conversion](#511-specializing-enum-conversion)
+  - [5.12 Binary formats (BSON, CBOR, MessagePack, UBJSON, and BJData)](#512-binary-formats-bson-cbor-messagepack-ubjson-and-bjdata)
+- [6 Customers](#6-customers)
+- [7 Supported compilers](#7-supported-compilers)
+- [8 Integration](#8-integration)
   - [CMake](#cmake)
+    - [External](#external)
+    - [Embedded](#embedded)
+      - [Embedded (FetchContent)](#embedded-fetchcontent)
+    - [Supporting Both](#supporting-both)
   - [Package Managers](#package-managers)
   - [Pkg-config](#pkg-config)
-- [License](#license)
-- [Contact](#contact)
-- [Thanks](#thanks)
-- [Used third-party tools](#used-third-party-tools)
-- [Notes](#notes)
-- [Execute unit tests](#execute-unit-tests)
+- [9 License](#9-license)
+- [10 Contact](#10-contact)
+- [11 Security](#11-security)
+- [12 Thanks](#12-thanks)
+- [13 Used third-party tools](#13-used-third-party-tools)
+- [14 Notes](#14-notes)
+  - [Character encoding](#character-encoding)
+  - [Comments in JSON](#comments-in-json)
+  - [Order of object keys](#order-of-object-keys)
+  - [Memory Release](#memory-release)
+  - [Further notes](#further-notes)
+- [15 Execute unit tests](#15-execute-unit-tests)
+```c
+/*
+Note:杨小兵-2025-01-23
 
-## Design goals
+1、[name](chapter)语法用来排版和显示该文档的目录结构和对应跳转的目录。
+*/
+```
+
+## 1 Design goals
 
 There are myriads of [JSON](https://json.org) libraries out there, and each may even have its reason to exist. Our class had these design goals:
+```c
+/*
+Note:杨小兵-2025-01-23
+
+1、这部分内容介绍一些关于JSON库的设计目标（design goals）
+2、市面上有无数的 [JSON](https://json.org) 库，每个库都有其存在的理由。
+  2.1 myriads：无数
+  2.2 从这个消息中可以得到的信息是：市面上存在着各种各样的不同类型的json库，每一个json库都有其存在的理由。
+  2.3 下列的内容想要说明当前的json被设计出来的一些goals。
+*/
+```
 
 - **Intuitive syntax**. In languages such as Python, JSON feels like a first class data type. We used all the operator magic of modern C++ to achieve the same feeling in your code. Check out the [examples below](#examples) and you'll know what I mean.
+  ```c
+  /*
+  Note:杨小兵-2025-01-23
 
+  1、直观的语法
+  2、在 Python 等语言中，JSON 感觉就像是一流的数据类型。我们使用现代 C++ 的所有运算符魔法在您的代码中实现同样的感觉。查看下面的[示例](#examples)，您就会明白我的意思。
+  3、"first-class data type" 指的是 JSON 被当作语言中的一种原生数据类型来使用，意味着它可以像基本数据类型（如整数、字符串等）一样被处理和操作，具有相同的灵活性和能力。
+  */
+  ```
 - **Trivial integration**. Our whole code consists of a single header file [`json.hpp`](https://github.com/nlohmann/json/blob/develop/single_include/nlohmann/json.hpp). That's it. No library, no subproject, no dependencies, no complex build system. The class is written in vanilla C++11. All in all, everything should require no adjustment of your compiler flags or project settings. The library is also included in all popular [package managers](https://json.nlohmann.me/integration/package_managers/).
+  ```c
+  /*
+  Note:杨小兵-2025-01-23
 
+  1、简单集成
+  2、我们的整个代码由一个头文件 [`json.hpp`](https://github.com/nlohmann/json/blob/develop/single_include/nlohmann/json.hpp) 组成。就是这样。没有库，没有子项目，没有依赖项，没有复杂的构建系统。该类是用原始 C++11 编写的。总而言之，一切都不需要调整编译器标志或项目设置。该库还包含在所有流行的 [包管理器](https://json.nlohmann.me/integration/package_managers/) 中。
+    2.1 整个代码就是一个头文件构成。
+    2.2 使用原始的C++11编写。
+    2.3 该json库还可以通过所有流行的包管理器来进行下载安装。
+  3、这些特点使得该 JSON 库非常适合需要快速、简单集成 JSON 处理功能的 C++ 项目，无论是个人开发者还是大型团队，都能轻松上手并高效使用。
+  */
+  ```
 - **Serious testing**. Our code is heavily [unit-tested](https://github.com/nlohmann/json/tree/develop/tests/src) and covers [100%](https://coveralls.io/r/nlohmann/json) of the code, including all exceptional behavior. Furthermore, we checked with [Valgrind](https://valgrind.org) and the [Clang Sanitizers](https://clang.llvm.org/docs/index.html) that there are no memory leaks. [Google OSS-Fuzz](https://github.com/google/oss-fuzz/tree/master/projects/json) additionally runs fuzz tests against all parsers 24/7, effectively executing billions of tests so far. To maintain high quality, the project is following the [Core Infrastructure Initiative (CII) best practices](https://bestpractices.coreinfrastructure.org/projects/289). See the [quality assurance](https://json.nlohmann.me/community/quality_assurance) overview documentation.
+  ```c
+  /*
+  Note:杨小兵-2025-01-23
 
+  1、严格测试
+  2、我们的代码经过了大量的 [单元测试](https://github.com/nlohmann/json/tree/develop/tests/src)，覆盖了 [100%](https://coveralls.io/r/nlohmann/json) 的代码，包括所有异常行为。此外，我们使用 [Valgrind](https://valgrind.org) 和 [Clang Sanitizers](https://clang.llvm.org/docs/index.html) 检查了是否存在内存泄漏。[Google OSS-Fuzz](https://github.com/google/oss-fuzz/tree/master/projects/json) 还会全天候对所有解析器运行模糊测试，迄今为止已有效执行了数十亿次测试。为了保持高质量，该项目遵循 [核心基础设施计划 (CII) 最佳实践](https://bestpractices.coreinfrastructure.org/projects/289)。请参阅质量保证概述文档。
+  */
+  ```
 Other aspects were not so important to us:
+  ```c
+  /*
+  Note:杨小兵-2025-01-23
 
+  1、下列的这些方便对此项目来说并不是特别的重要。
+  */
+  ```
 - **Memory efficiency**. Each JSON object has an overhead of one pointer (the maximal size of a union) and one enumeration element (1 byte). The default generalization uses the following C++ data types: `std::string` for strings, `int64_t`, `uint64_t` or `double` for numbers, `std::map` for objects, `std::vector` for arrays, and `bool` for Booleans. However, you can template the generalized class `basic_json` to your needs.
+  ```c
+  /*
+  Note:杨小兵-2025-01-23
 
+  1、内存效率
+  2、每个 JSON 对象都有一个指针（联合的最大大小）和一个枚举元素（1 字节）的开销。默认泛化使用以下 C++ 数据类型：`std::string` 用于字符串，`int64_t`、`uint64_t` 或 `double` 用于数字，`std::map` 用于对象，`std::vector` 用于数组，`bool` 用于布尔值。但是，您可以根据需要模板化泛化类 `basic_json`。
+  */
+  ```
 - **Speed**. There are certainly [faster JSON libraries](https://github.com/miloyip/nativejson-benchmark#parsing-time) out there. However, if your goal is to speed up your development by adding JSON support with a single header, then this library is the way to go. If you know how to use a `std::vector` or `std::map`, you are already set.
+  ```c
+  /*
+  Note:杨小兵-2025-01-23
 
+  1、速度
+  2、当然有[更快的 JSON 库](https://github.com/miloyip/nativejson-benchmark#parsing-time)。但是，如果您的目标是通过添加单个头文件的 JSON 支持来加快开发速度，那么此库就是您的最佳选择。如果您知道如何使用 `std::vector` 或 `std::map`，那么您已经准备好了。
+  */
+  ```
 See the [contribution guidelines](https://github.com/nlohmann/json/blob/master/.github/CONTRIBUTING.md#please-dont) for more information.
+```c
+/*
+Note:杨小兵-2025-01-23
 
-## Sponsors
+1、查看[contribution guidelines](https://github.com/nlohmann/json/blob/master/.github/CONTRIBUTING.md#please-dont)获取更多的信息。
+*/
+```
+
+## 2 Sponsors
 
 You can sponsor this library at [GitHub Sponsors](https://github.com/sponsors/nlohmann).
+```c
+/*
+Note:杨小兵-2025-01-23
 
-### :raising_hand: Priority Sponsor
+1、可以通过[GitHub Sponsors](https://github.com/sponsors/nlohmann)来赞助这个库。
+*/
+```
+
+### 2.1 :raising_hand: Priority Sponsor
 
 - [Martti Laine](https://github.com/codeclown)
 - [Paul Harrington](https://github.com/phrrngtn)
+```c
+/*
+Note:杨小兵-2025-01-23
 
-### :label: Named Sponsors
+1、上述提到的两个人是"优先赞助商"
+*/
+```
+
+### 2.2 :label: Named Sponsors
 
 - [Michael Hartmann](https://github.com/reFX-Mike)
 - [Stefan Hagen](https://github.com/sthagen)
@@ -88,28 +217,83 @@ You can sponsor this library at [GitHub Sponsors](https://github.com/sponsors/nl
 - [Robert Jefe Lindstädt](https://github.com/eljefedelrodeodeljefe)
 - [Steve Wagner](https://github.com/ciroque)
 - [Lion Yang](https://github.com/LionNatsu)
+```c
+/*
+Note:杨小兵-2025-01-23
 
-### Further support
+1、上述提到的多个人是"指定赞助商"
+*/
+```
+
+### 2.3 Further support
 
 The development of the library is further supported by JetBrains by providing free access to their IDE tools.
 
 [![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSourceSupport)
 
 Thanks everyone!
+```c
+/*
+Note:杨小兵-2025-01-23
 
-## Support
+1、将来的一些支持。
+2、JetBrains 通过提供免费访问其 IDE 工具的方式进一步支持了该库的开发。
+3、 JetBrains 通过免费提供其强大的集成开发环境（IDE）工具，支持该库的开发工作。这种支持不仅降低了开发成本，还提升了开发效率和代码质量，促进了库的持续发展和维护。JetBrains 的支持对于开发团队来说是一种重要的资源，能够帮助他们更高效地完成项目目标。
+*/
+```
+
+## 3 Support
 
 :question: If you have a **question**, please check if it is already answered in the [**FAQ**](https://json.nlohmann.me/home/faq/) or the [**Q&A**](https://github.com/nlohmann/json/discussions/categories/q-a) section. If not, please [**ask a new question**](https://github.com/nlohmann/json/discussions/new) there.
+```c
+/*
+Note:杨小兵-2025-01-23
+
+1、:question:
+2、如果你有一个question，在FAQ或者Q&A部分请查看该问题是否已经被回答了。如果该问题没有被回答那么可以在ask a new question中提一个新的问题。
+*/
+```
 
 :books: If you want to **learn more** about how to use the library, check out the rest of the [**README**](#examples), have a look at [**code examples**](https://github.com/nlohmann/json/tree/develop/docs/mkdocs/docs/examples), or browse through the [**help pages**](https://json.nlohmann.me).
+```c
+/*
+Note:杨小兵-2025-01-23
+
+1、:books:
+2、如果你想要详细了解如何使用该库，请查看其余的 [README](#examples)，查看[代码示例](https://github.com/nlohmann/json/tree/develop/docs/mkdocs/docs/examples)，或浏览[帮助页面](https://json.nlohmann.me)。
+*/
+```
 
 :construction: If you want to understand the **API** better, check out the [**API Reference**](https://json.nlohmann.me/api/basic_json/) or have a look at the [quick reference](#quick-reference) below.
+```c
+/*
+Note:杨小兵-2025-01-23
+
+1、:construction:
+2、如果你想要更好地理解 API，请查看 [API 参考](https://json.nlohmann.me/api/basic_json/) 或查看下面的 [快速参考](#quick-reference)。
+*/
+```
 
 :bug: If you found a **bug**, please check the [**FAQ**](https://json.nlohmann.me/home/faq/) if it is a known issue or the result of a design decision. Please also have a look at the [**issue list**](https://github.com/nlohmann/json/issues) before you [**create a new issue**](https://github.com/nlohmann/json/issues/new/choose). Please provide as much information as possible to help us understand and reproduce your issue.
+```c
+/*
+Note:杨小兵-2025-01-23
+
+1、:bug:
+2、如果您发现错误，请查看[常见问题](https://json.nlohmann.me/home/faq/)，确定它是已知问题还是设计决策的结果。在[创建新问题](https://github.com/nlohmann/json/issues)之前，还请查看[问题列表](https://github.com/nlohmann/json/issues)。请提供尽可能多的信息，以帮助我们了解和重现您的问题。
+*/
+```
 
 There is also a [**docset**](https://github.com/Kapeli/Dash-User-Contributions/tree/master/docsets/JSON_for_Modern_C%2B%2B) for the documentation browsers [Dash](https://kapeli.com/dash), [Velocity](https://velocity.silverlakesoftware.com), and [Zeal](https://zealdocs.org) that contains the full [documentation](https://json.nlohmann.me) as offline resource.
+```c
+/*
+Note:杨小兵-2025-01-23
 
-## Quick reference
+1、另外，还提供了一个适用于文档浏览器 [Dash](https://kapeli.com/dash)、[Velocity](https://velocity.silverlakesoftware.com) 和 [Zeal](https://zealdocs.org) 的 [docset](https://github.com/Kapeli/Dash-User-Contributions/tree/master/docsets/JSON_for_Modern_C%2B%2B)，其中包含完整的 [文档](https://json.nlohmann.me) 作为离线资源。
+*/
+```
+
+## 4 Quick reference
 
 - **Constructors** [basic_json](https://json.nlohmann.me/api/basic_json/basic_json), [array](https://json.nlohmann.me/api/basic_json/array), [binary](https://json.nlohmann.me/api/basic_json/binary), [object](https://json.nlohmann.me/api/basic_json/object)
 - **Object inspection**: [type](https://json.nlohmann.me/api/basic_json/type), [operator value_t](https://json.nlohmann.me/api/basic_json/operator_value_t), [type_name](https://json.nlohmann.me/api/basic_json/type_name), [is_primitive](https://json.nlohmann.me/api/basic_json/is_primitive), [is_structured](https://json.nlohmann.me/api/basic_json/is_structured), [is_null](https://json.nlohmann.me/api/basic_json/is_null), [is_boolean](https://json.nlohmann.me/api/basic_json/is_boolean), [is_number](https://json.nlohmann.me/api/basic_json/is_number), [is_number_integer](https://json.nlohmann.me/api/basic_json/is_number_integer), [is_number_unsigned](https://json.nlohmann.me/api/basic_json/is_number_unsigned), [is_number_float](https://json.nlohmann.me/api/basic_json/is_number_float), [is_object](https://json.nlohmann.me/api/basic_json/is_object), [is_array](https://json.nlohmann.me/api/basic_json/is_array), [is_string](https://json.nlohmann.me/api/basic_json/is_string), [is_binary](https://json.nlohmann.me/api/basic_json/is_binary), [is_discarded](https://json.nlohmann.me/api/basic_json/is_discarded)
@@ -132,7 +316,7 @@ There is also a [**docset**](https://github.com/Kapeli/Dash-User-Contributions/t
 
 [**Full API documentation**](https://json.nlohmann.me/api/basic_json/)
 
-## Examples
+## 5 Examples
 
 Here are some examples to give you an idea how to use the class.
 
@@ -142,7 +326,7 @@ Beside the examples below, you may want to:
 → Browse the [standalone example files](https://github.com/nlohmann/json/tree/develop/docs/mkdocs/docs/examples)\
 → Read the full [API Documentation](https://json.nlohmann.me/api/basic_json/) with self-contained examples for every function
 
-### Read JSON from a file
+### 5.1 Read JSON from a file
 
 The `json` class provides an API for manipulating a JSON value. To create a `json` object by reading a JSON file:
 
@@ -157,7 +341,7 @@ std::ifstream f("example.json");
 json data = json::parse(f);
 ```
 
-### Creating `json` objects from JSON literals
+### 5.2 Creating `json` objects from JSON literals
 
 Assume you want to create hard-code this literal JSON value in a file, as a `json` object:
 
@@ -195,7 +379,7 @@ json ex3 = {
 };
 ```
 
-### JSON as first-class data type
+### 5.3 JSON as first-class data type
 
 Here are some examples to give you an idea how to use the class.
 
@@ -276,7 +460,7 @@ json empty_object_explicit = json::object();
 json array_not_object = json::array({ {"currency", "USD"}, {"value", 42.99} });
 ```
 
-### Serialization / Deserialization
+### 5.4 Serialization / Deserialization
 
 #### To/from strings
 
@@ -488,7 +672,7 @@ To implement your own SAX handler, proceed as follows:
 
 Note the `sax_parse` function only returns a `bool` indicating the result of the last executed SAX event. It does not return a  `json` value - it is up to you to decide what to do with the SAX events. Furthermore, no exceptions are thrown in case of a parse error - it is up to you what to do with the exception object passed to your `parse_error` implementation. Internally, the SAX interface is used for the DOM parser (class `json_sax_dom_parser`) as well as the acceptor (`json_sax_acceptor`), see file [`json_sax.hpp`](https://github.com/nlohmann/json/blob/develop/include/nlohmann/detail/input/json_sax.hpp).
 
-### STL-like access
+### 5.5 STL-like access
 
 We designed the JSON class to behave just like an STL container. In fact, it satisfies the [**ReversibleContainer**](https://en.cppreference.com/w/cpp/named_req/ReversibleContainer) requirement.
 
@@ -576,7 +760,7 @@ int fob_present = o.count("fob"); // 0
 o.erase("foo");
 ```
 
-### Conversion from STL containers
+### 5.6 Conversion from STL containers
 
 Any sequence container (`std::array`, `std::vector`, `std::deque`, `std::forward_list`, `std::list`) whose values can be used to construct JSON values (e.g., integers, floating point numbers, Booleans, string types, or again STL containers described in this section) can be used to create a JSON array. The same holds for similar associative containers (`std::set`, `std::multiset`, `std::unordered_set`, `std::unordered_multiset`), but in these cases the order of the elements of the array depends on how the elements are ordered in the respective STL container.
 
@@ -638,7 +822,7 @@ json j_ummap(c_ummap); // only one entry for key "three" is used
 // maybe {"one": true, "two": true, "three": true}
 ```
 
-### JSON Pointer and JSON Patch
+### 5.7 JSON Pointer and JSON Patch
 
 The library supports **JSON Pointer** ([RFC 6901](https://tools.ietf.org/html/rfc6901)) as alternative means to address structured values. On top of this, **JSON Patch** ([RFC 6902](https://tools.ietf.org/html/rfc6902)) allows describing differences between two JSON values - effectively allowing patch and diff operations known from Unix.
 
@@ -676,7 +860,7 @@ json::diff(j_result, j_original);
 // ]
 ```
 
-### JSON Merge Patch
+### 5.8 JSON Merge Patch
 
 The library supports **JSON Merge Patch** ([RFC 7386](https://tools.ietf.org/html/rfc7386)) as a patch format. Instead of using JSON Pointer (see above) to specify values to be manipulated, it describes the changes using a syntax that closely mimics the document being modified.
 
@@ -708,7 +892,7 @@ j_document.merge_patch(j_patch);
 // }
 ```
 
-### Implicit conversions
+### 5.9 Implicit conversions
 
 Supported types can be implicitly converted to JSON values.
 
@@ -755,7 +939,7 @@ json j_default = ch;                 // stores integer number 65
 json j_string = std::string(1, ch);  // stores string "A"
 ```
 
-### Arbitrary types conversions
+### 5.10 Arbitrary types conversions
 
 Every type can be serialized in JSON, not just STL containers and scalar types. Usually, you would do something along those lines:
 
@@ -1010,7 +1194,7 @@ struct bad_serializer
 };
 ```
 
-### Specializing enum conversion
+### 5.11 Specializing enum conversion
 
 By default, enum values are serialized to JSON as integers. In some cases this could result in undesired behavior. If an enum is modified or re-ordered after data has been serialized to JSON, the later de-serialized JSON data may be undefined or a different enum value than was originally intended.
 
@@ -1062,7 +1246,7 @@ Other Important points:
 - When using `template get<ENUM_TYPE>()`, undefined JSON values will default to the first pair specified in your map. Select this default pair carefully.
 - If an enum or JSON value is specified more than once in your map, the first matching occurrence from the top of the map will be returned when converting to or from JSON.
 
-### Binary formats (BSON, CBOR, MessagePack, UBJSON, and BJData)
+### 5.12 Binary formats (BSON, CBOR, MessagePack, UBJSON, and BJData)
 
 Though JSON is a ubiquitous data format, it is not a very compact format suitable for data exchange, for instance over a network. Hence, the library supports [BSON](https://bsonspec.org) (Binary JSON), [CBOR](https://cbor.io) (Concise Binary Object Representation), [MessagePack](https://msgpack.org), [UBJSON](https://ubjson.org) (Universal Binary JSON Specification) and [BJData](https://neurojson.org/bjdata) (Binary JData) to efficiently encode JSON values to byte vectors and to decode such vectors.
 
@@ -1133,13 +1317,13 @@ binary.set_subtype(0x10);
 auto cbor = json::to_msgpack(j); // 0xD5 (fixext2), 0x10, 0xCA, 0xFE
 ```
 
-## Customers
+## 6 Customers
 
 The library is used in multiple projects, applications, operating systems, etc. The list below is not exhaustive, but the result of an internet search. If you know further customers of the library, please let me know, see [contact](#contact).
 
 [![logos of customers using the library](docs/mkdocs/docs/images/customers.png)](https://json.nlohmann.me/home/customers/)
 
-## Supported compilers
+## 7 Supported compilers
 
 Though it's 2025 already, the support for C++11 is still a bit sparse. Currently, the following compilers are known to work:
 
@@ -1174,7 +1358,7 @@ Please note:
 
 See the page [quality assurance](https://json.nlohmann.me/community/quality_assurance) on the compilers used to check the library in the CI.
 
-## Integration
+## 8 Integration
 
 [`json.hpp`](https://github.com/nlohmann/json/blob/develop/single_include/nlohmann/json.hpp) is the single required file in `single_include/nlohmann` or [released here](https://github.com/nlohmann/json/releases). You need to add
 
@@ -1314,7 +1498,7 @@ If you are using bare Makefiles, you can use `pkg-config` to generate the includ
 pkg-config nlohmann_json --cflags
 ```
 
-## License
+## 9 License
 
 <img align="right" src="https://149753425.v2.pressablecdn.com/wp-content/uploads/2009/06/OSIApproved_100X125.png" alt="OSI approved license">
 
@@ -1344,17 +1528,17 @@ The library is compliant to version 3.3 of the [**REUSE specification**](https:/
 - File `.reuse/dep5` contains an overview of all files' copyrights and licenses.
 - Run `pipx run reuse lint` to verify the project's REUSE compliance and `pipx run reuse spdx` to generate a SPDX SBOM.
 
-## Contact
+## 10 Contact
 
 If you have questions regarding the library, I would like to invite you to [open an issue at GitHub](https://github.com/nlohmann/json/issues/new/choose). Please describe your request, problem, or question as detailed as possible, and also mention the version of the library you are using as well as the version of your compiler and operating system. Opening an issue at GitHub allows other users and contributors to this library to collaborate. For instance, I have little experience with MSVC, and most issues in this regard have been solved by a growing community. If you have a look at the [closed issues](https://github.com/nlohmann/json/issues?q=is%3Aissue+is%3Aclosed), you will see that we react quite timely in most cases.
 
 Only if your request would contain confidential information, please [send me an email](mailto:mail@nlohmann.me). For encrypted messages, please use [this key](https://keybase.io/nlohmann/pgp_keys.asc).
 
-## Security
+## 11 Security
 
 [Commits by Niels Lohmann](https://github.com/nlohmann/json/commits) and [releases](https://github.com/nlohmann/json/releases) are signed with this [PGP Key](https://keybase.io/nlohmann/pgp_keys.asc?fingerprint=797167ae41c0a6d9232e48457f3cea63ae251b69).
 
-## Thanks
+## 12 Thanks
 
 I deeply appreciate the help of the following people.
 
@@ -1709,7 +1893,7 @@ I deeply appreciate the help of the following people.
 
 Thanks a lot for helping out! Please [let me know](mailto:mail@nlohmann.me) if I forgot someone.
 
-## Used third-party tools
+## 13 Used third-party tools
 
 The library itself consists of a single header file licensed under the MIT license. However, it is built, tested, documented, and whatnot using a lot of third-party tools and services. Thanks a lot!
 
@@ -1735,7 +1919,7 @@ The library itself consists of a single header file licensed under the MIT licen
 - [**Probot**](https://probot.github.io) for automating maintainer tasks such as closing stale issues, requesting missing information, or detecting toxic comments.
 - [**Valgrind**](https://valgrind.org) to check for correct memory management
 
-## Notes
+## 14 Notes
 
 ### Character encoding
 
@@ -1789,7 +1973,7 @@ Here is a related issue [#1924](https://github.com/nlohmann/json/issues/1924).
 - The code can be compiled without C++ **runtime type identification** features; that is, you can use the `-fno-rtti` compiler flag.
 - **Exceptions** are used widely within the library. They can, however, be switched off with either using the compiler flag `-fno-exceptions` or by defining the symbol `JSON_NOEXCEPTION`. In this case, exceptions are replaced by `abort()` calls. You can further control this behavior by defining `JSON_THROW_USER` (overriding `throw`), `JSON_TRY_USER` (overriding `try`), and `JSON_CATCH_USER` (overriding `catch`). Note that `JSON_THROW_USER` should leave the current scope (e.g., by throwing or aborting), as continuing after it may yield undefined behavior. Note the explanatory [`what()`](https://en.cppreference.com/w/cpp/error/exception/what) string of exceptions is not available for MSVC if exceptions are disabled, see [#2824](https://github.com/nlohmann/json/discussions/2824). See the [**documentation of exceptions**](https://json.nlohmann.me/home/exceptions/) for more information.
 
-## Execute unit tests
+## 15 Execute unit tests
 
 To compile and run the tests, you need to execute
 
